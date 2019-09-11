@@ -95,3 +95,16 @@ for name, param in net.named_parameters():
         print (name, param.data)
 
 torch.save(net.state_dict(), 'fnn_model_mnist_sigmoid.pkl')
+
+
+'''
+net.load_state_dict(torch.load('fnn_model_mnist_sigmoid.pkl'))
+
+a=dict(net.named_parameters())
+a['fc1.weight'].size()
+a['fc1.bias'].size()
+a['fc2.weight'].size()
+a['fc2.bias'].size()
+a['fc3.weight'].size()
+a['fc3.bias'].size()
+'''

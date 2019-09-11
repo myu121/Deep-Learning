@@ -12,6 +12,7 @@ import torch.nn as nn
 import torchvision.transforms as transforms
 import torchvision.datasets as dsets
 from torch.autograd import Variable
+import time
 #from keras.datasets import mnist
 # Setup train and test splits  
 #(x_train, y_train), (x_test, y_test) = mnist.load_data()
@@ -63,6 +64,8 @@ net = Net(input_size, hidden_size, num_classes)
 criterion = nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(net.parameters(), lr=learning_rate)
 
+t0=time.time()
+
 for epoch in range(num_epochs):
     for i, (images, labels) in enumerate(train_loader):   # Load a batch of images with its (index, data, class)
         images = Variable(images.view(-1, 28*28))         
@@ -77,6 +80,9 @@ for epoch in range(num_epochs):
         if (i+1) % 100 == 0:                              # Logging
             print('Epoch [%d/%d], Step [%d/%d], Loss: %.4f'
                  %(epoch+1, num_epochs, i+1, len(train_dataset)//batch_size, loss.data))
+
+
+print('{} seconds'.format(time.time()-t0))
 
 
 correct = 0

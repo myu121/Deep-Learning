@@ -40,50 +40,6 @@ model.compile(optimizer=SGD_new(),
 model.fit(x_train, y_train, epochs=5)
 model.evaluate(x_test, y_test)
 
-class SGD_new(SGD):
-    def __init__(self, learning_rate=0.01, momentum=0., nesterov=False, tau=300, eps_tau=0.0001, **kwargs):
-        self.tau = tau
-        self.eps_tau = eps_tau
-        learning_rate = kwargs.pop('lr', learning_rate)
-        self.initial_decay = kwargs.pop('decay', 0.0)
-        super().__init__(learning_rate, momentum, nesterov, **kwargs)
-        #super().__init__(learning_rate, momentum, nesterov, **kwargs)
-    def get_updates(self, loss, params):
-        grads = self.get_gradients(loss, params)
-        self.updates = [K.update_add(self.iterations, 1)]
-
-        with tf.Session() as sess:
-            sess.run(tf.initialize_all_variables()) #execute init_op
-            #print the random values that we sample
-            it = sess.run(self.iterations)
-        #lr = self.learning_rate
-        if it <= self.tau:
-            lr = (self.tau-self.iterations)/self.tau*self.learning_rate + self.iterations/self.tau*self.eps_tau
-        else:
-            lr = self.eps_tau
-        #if self.initial_decay > 0:
-        #    lr = lr * (1. / (1. + self.decay * K.cast(self.iterations,
-        #                                              K.dtype(self.decay))))
-        # momentum
-        shapes = [K.int_shape(p) for p in params]
-        moments = [K.zeros(shape, name='moment_' + str(i))
-                   for (i, shape) in enumerate(shapes)]
-        self.weights = [self.iterations] + moments
-        for p, g, m in zip(params, grads, moments):
-            v = self.momentum * m - lr * g  # velocity
-            self.updates.append(K.update(m, v))
-
-            if self.nesterov:
-                new_p = p + self.momentum * v - lr * g
-            else:
-                new_p = p + v
-
-            # Apply constraints.
-            if getattr(p, 'constraint', None) is not None:
-                new_p = p.constraint(new_p)
-
-            self.updates.append(K.update(p, new_p))
-        return self.updates
 
 class SGD_new(Optimizer):
     """Stochastic gradient descent optimizer.

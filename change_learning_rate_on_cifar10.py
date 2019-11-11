@@ -5,7 +5,14 @@ from keras.utils import to_categorical
 from keras.optimizers import *
 import numpy as np
 import copy
+import matplotlib.pyplot as plt
 (x_train, y_train), (x_test, y_test) = cifar10.load_data()
+xnew_train=x_train[np.where(y_train==5)[0],]
+ynew_train=y_train[np.where(y_train==5)[0]]
+xnew_test=x_test[np.where(y_test==5)[0],]
+ynew_test=y_train[np.where(y_test==5)[0]]
+
+
 m = max(x_train.flatten())
 x_train = x_train/m
 x_test = x_test/m
